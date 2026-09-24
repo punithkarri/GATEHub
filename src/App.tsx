@@ -44,6 +44,7 @@ export function App() {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState<boolean>(false);
   const [selectedBranch, setSelectedBranch] = useState<Branch>('CSE');
+  const [isExamModeActive, setIsExamModeActive] = useState<boolean>(false);
 
   const navigateTo = (route: string) => {
     setCurrentRoute(route);
@@ -98,10 +99,10 @@ export function App() {
       return <PyqExplorerPage onNavigate={navigateTo} />;
     }
     if (currentRoute === '/practice') {
-      return <PracticeModePage />;
+      return <PracticeModePage onNavigate={navigateTo} onExamModeChange={setIsExamModeActive} />;
     }
     if (currentRoute === '/mock-tests') {
-      return <MockTestPage />;
+      return <MockTestPage onNavigate={navigateTo} onExamModeChange={setIsExamModeActive} />;
     }
     if (currentRoute === '/where-to-study') {
       return <WhereToStudyPage />;
@@ -140,7 +141,7 @@ export function App() {
       const parts = currentRoute.split('/'); // /full-paper/:year/:paper
       const year = Number(parts[2]) || 2025;
       const paper = parts[3] || 'CS-1';
-      return <FullPaperPage year={year} paper={paper} onNavigate={navigateTo} />;
+      return <FullPaperPage year={year} paper={paper} onNavigate={navigateTo} onExamModeChange={setIsExamModeActive} />;
     }
 
     return <HomePage onNavigate={navigateTo} />;
@@ -148,22 +149,24 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0b0f19] text-slate-100 font-sans transition-colors duration-300">
-      <Navbar
-        currentRoute={currentRoute}
-        onNavigate={navigateTo}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        isDarkMode={isDarkMode}
-        onToggleTheme={toggleTheme}
-        selectedBranch={selectedBranch}
-        onSelectBranch={setSelectedBranch}
-        onToggleCalculator={() => setIsCalculatorOpen(!isCalculatorOpen)}
-      />
+      {!isExamModeActive && (
+        <Navbar
+          currentRoute={currentRoute}
+          onNavigate={navigateTo}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          isDarkMode={isDarkMode}
+          onToggleTheme={toggleTheme}
+          selectedBranch={selectedBranch}
+          onSelectBranch={setSelectedBranch}
+          onToggleCalculator={() => setIsCalculatorOpen(!isCalculatorOpen)}
+        />
+      )}
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <main className={`flex-1 w-full mx-auto ${isExamModeActive ? 'max-w-none p-0' : 'max-w-7xl px-4 sm:px-6 lg:px-8 py-4'}`}>
         {renderContent()}
       </main>
 
-      <Footer onNavigate={navigateTo} />
+      {!isExamModeActive && <Footer onNavigate={navigateTo} />}
 
       <GlobalSearchModal
         isOpen={isSearchOpen}

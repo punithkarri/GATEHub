@@ -109,7 +109,8 @@ export const GATE_PAPERS_CATALOG: PaperInfo[] = [
 ];
 
 export const getQuestionsByPaper = (year: number, paper: string): Question[] => {
-  return ALL_GATE_PYQS.filter(q => q.year === year && (q.paper === paper || paper === 'CS'));
+  return ALL_GATE_PYQS.filter(q => q.year === year && (q.paper === paper || paper === 'CS'))
+    .sort((a, b) => a.questionNo - b.questionNo);
 };
 
 export const getQuestionsBySubject = (subjectId: string): Question[] => {
@@ -124,3 +125,66 @@ export const getQuestionsByTopic = (topicName: string): Question[] => {
     q.conceptTested.toLowerCase().includes(norm)
   );
 };
+
+/**
+ * Returns exact paper completeness status.
+ * If available questions < 65, labels it clearly as a "Partial Paper — XX/65 questions available".
+ */
+export const getPaperCompletenessInfo = (year: number, paper: string) => {
+  const questions = getQuestionsByPaper(year, paper);
+  const count = questions.length;
+  const isComplete = count >= 65;
+
+  return {
+    isComplete,
+    availableCount: count,
+    totalExpected: 65,
+    label: isComplete
+      ? `Full Official Paper (${count}/65 Questions)`
+      : `Partial Paper — ${count}/65 questions available`,
+    questions
+  };
+};
+
+/**
+ * Generates a balanced 65-question GATE CSE Full Practice Paper from the entire database pool.
+ * Clearly labeled: "Practice Paper — GATEHub Generated"
+ */
+export const generateFullPracticePaper = (paperTitle: string = 'GATEHub Full Practice Paper'): Question[] => {
+  const gaQuestions = ALL_GATE_PYQS.filter(q => q.subjectId === 'ga');
+  const coreQuestions = ALL_GATE_PYQS.filter(q => q.subjectId !== 'ga');
+
+  // Shuffle pools deterministic-ish or random
+  const shuffle = <T>(arr: T[]): T[] => [...arr].sort(() => 0.5 - Math.random());
+
+  const selectedGA = shuffle(gaQuestions).slice(0, 10);
+  const selectedCore = shuffle(coreQuestions).slice(0, 55);
+
+  // Combine: Q1-Q10 (General Aptitude), Q11-Q65 (Core CS & Engineering Math)
+  const fullPaper: Question[] = [];
+
+  // Assign Q1 - Q10 GA
+  selectedGA.forEach((q, idx) => {
+    fullPaper.push({
+      ...q,
+      id: `gen-practice-q${idx + 1}`,
+      questionNo: idx + 1,
+      source: 'Practice Paper — GATEHub Generated',
+      tags: [...(q.tags || []), 'GATEHub Practice Paper']
+    });
+  });
+
+  // Assign Q11 - Q65 Core CS
+  selectedCore.forEach((q, idx) => {
+    fullPaper.push({
+      ...q,
+      id: `gen-practice-q${idx + 11}`,
+      questionNo: idx + 11,
+      source: 'Practice Paper — GATEHub Generated',
+      tags: [...(q.tags || []), 'GATEHub Practice Paper']
+    });
+  });
+
+  return fullPaper;
+};
+

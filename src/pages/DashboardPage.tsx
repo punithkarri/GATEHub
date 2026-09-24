@@ -141,6 +141,49 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </div>
       </div>
 
+      {/* CBT Exam Attempt History */}
+      {(() => {
+        const historyStr = localStorage.getItem('gatehub_exam_history');
+        const history = historyStr ? JSON.parse(historyStr) : [];
+        if (history.length === 0) return null;
+
+        return (
+          <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+                <Award className="w-5 h-5 text-emerald-400" /> Past CBT Exam Attempt History
+              </h3>
+              <button
+                onClick={() => onNavigate('/mock-tests')}
+                className="text-xs text-indigo-400 font-bold hover:underline"
+              >
+                Take New Mock Exam →
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {history.slice(0, 4).map((rec: any) => (
+                <div key={rec.id} className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-bold text-xs text-white">{rec.paperTitle}</h4>
+                      <span className="text-[10px] text-slate-400">{rec.date}</span>
+                    </div>
+                    <span className="text-sm font-black text-emerald-400">{rec.score} / {rec.totalMarks} pts</span>
+                  </div>
+
+                  <div className="flex justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-2">
+                    <span>Accuracy: <strong>{rec.accuracy}%</strong></span>
+                    <span>Attempted: <strong>{rec.attempted}/{rec.totalQuestions}</strong></span>
+                    <span>Focus Lost: <strong>{rec.focusLossCount}x</strong></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Badges & Achievements */}
       <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
         <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
