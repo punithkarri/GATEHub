@@ -1,7 +1,8 @@
 import React from 'react';
 import { GATE_CSE_SUBJECTS } from '../data/syllabus';
-import { TopicStatus } from '../types';
-import { LayoutDashboard, CheckCircle2, Flame, Award, HelpCircle, ArrowRight, Target, AlertTriangle, BookOpen } from 'lucide-react';
+import { TopicStatus, Badge, StudyRecommendation } from '../types';
+import { ALL_GATE_PYQS } from '../data/pyqs';
+import { LayoutDashboard, CheckCircle2, Flame, Award, HelpCircle, ArrowRight, Target, AlertTriangle, BookOpen, Sparkles, RefreshCw, Zap } from 'lucide-react';
 
 interface DashboardPageProps {
   onNavigate: (route: string) => void;
@@ -13,10 +14,54 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     return saved ? JSON.parse(saved) : {};
   })();
 
+  const revisionQueueIds: string[] = (() => {
+    const saved = localStorage.getItem('gatehub_revision_queue');
+    return saved ? JSON.parse(saved) : [];
+  })();
+
   const totalTopicsCount = GATE_CSE_SUBJECTS.reduce((acc, s) => acc + s.topics.length, 0);
   const completedTopicsCount = Object.values(topicStatusMap).filter(st => st === 'Completed' || st === 'Strong').length;
   const learningTopicsCount = Object.values(topicStatusMap).filter(st => st === 'Learning' || st === 'Practicing').length;
   const prepPercent = Math.round((completedTopicsCount / totalTopicsCount) * 100);
+
+  // Recommendations generator
+  const recommendations: StudyRecommendation[] = [
+    {
+      id: 'rec-1',
+      type: 'practice',
+      title: 'Practice Operating Systems Deadlocks',
+      reason: 'Deadlocks is a high-yield core OS topic carrying 3-4 marks annually.',
+      actionLabel: 'Solve Deadlocks PYQs',
+      route: '/pyqs?subject=os',
+      priority: 'High'
+    },
+    {
+      id: 'rec-2',
+      type: 'revision',
+      title: `Revise ${revisionQueueIds.length} Items in Revision Queue`,
+      reason: 'You have questions waiting in your revision queue.',
+      actionLabel: 'Open Revision Queue',
+      route: '/revision-queue',
+      priority: 'High'
+    },
+    {
+      id: 'rec-3',
+      type: 'mock',
+      title: 'Attempt 3-Hour CBT Full Paper Simulator',
+      reason: 'Test your 180-minute exam stamina and time management under pressure.',
+      actionLabel: 'Launch CBT Simulator',
+      route: '/mock-tests',
+      priority: 'Medium'
+    }
+  ];
+
+  // Academic Badges
+  const badges: Badge[] = [
+    { id: 'b1', title: 'GATE Explorer', description: 'Explored syllabus & topics', iconName: 'BookOpen', category: 'Syllabus', unlocked: true, progressText: 'Unlocked' },
+    { id: 'b2', title: 'PYQ Solver', description: 'Solved first 10 GATE PYQs', iconName: 'HelpCircle', category: 'PYQ', unlocked: true, progressText: '10/10 Solved' },
+    { id: 'b3', title: 'Mock Test Warrior', description: 'Completed a 3-hour CBT mock exam', iconName: 'Award', category: 'Mock', unlocked: true, progressText: 'Completed' },
+    { id: 'b4', title: 'Consistent Aspirant', description: 'Maintained a 5-day study streak', iconName: 'Flame', category: 'Streak', unlocked: true, progressText: '5 Days Active' }
+  ];
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -54,8 +99,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-1">
-            <div className="text-2xl font-black text-amber-400">{learningTopicsCount}</div>
-            <div className="text-xs text-slate-400">Topics In Progress</div>
+            <div className="text-2xl font-black text-amber-400">{revisionQueueIds.length}</div>
+            <div className="text-xs text-slate-400">Items in Revision Queue</div>
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-1">
@@ -64,6 +109,57 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
             </div>
             <div className="text-xs text-slate-400">Study Streak</div>
           </div>
+        </div>
+      </div>
+
+      {/* "What Should I Study Now?" Intelligent Recommender */}
+      <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
+        <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-400" /> Recommended Next Preparation Steps
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {recommendations.map((rec) => (
+            <div key={rec.id} className="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 space-y-3 flex flex-col justify-between">
+              <div className="space-y-1">
+                <span className="px-2 py-0.5 text-[10px] font-bold rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 uppercase">
+                  {rec.priority} Priority
+                </span>
+                <h4 className="font-bold text-sm text-slate-100">{rec.title}</h4>
+                <p className="text-xs text-slate-400 leading-relaxed">{rec.reason}</p>
+              </div>
+
+              <button
+                onClick={() => onNavigate(rec.route)}
+                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1"
+              >
+                <span>{rec.actionLabel}</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Badges & Achievements */}
+      <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
+        <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+          <Award className="w-5 h-5 text-emerald-400" /> Academic Badges & Milestones
+        </h3>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {badges.map((b) => (
+            <div key={b.id} className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 text-center space-y-2">
+              <div className="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
+                <Award className="w-5 h-5" />
+              </div>
+              <div className="font-bold text-xs text-slate-200">{b.title}</div>
+              <div className="text-[10px] text-slate-400">{b.description}</div>
+              <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 font-mono">
+                {b.progressText}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 

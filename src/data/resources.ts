@@ -12,7 +12,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/',
     sourceName: 'MIT Press (Cormen, Leiserson, Rivest, Stein)',
     rating: 4.9,
-    tags: ['Standard Book', 'Algorithms', 'Core Reference']
+    tags: ['Standard Book', 'Algorithms', 'Core Reference'],
+    recommendedFor: 'In-depth algorithm concept mastery and mathematical proofs.'
   },
   {
     id: 'res-2',
@@ -25,7 +26,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://www.wiley.com/',
     sourceName: 'Wiley (Silberschatz, Galvin, Gagne)',
     rating: 4.8,
-    tags: ['Standard Book', 'Operating Systems', 'Must Read']
+    tags: ['Standard Book', 'Operating Systems', 'Must Read'],
+    recommendedFor: 'Understanding process synchronization and virtual memory concepts.'
   },
   {
     id: 'res-3',
@@ -38,7 +40,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://nptel.ac.in/courses/106104024',
     sourceName: 'IIT Kanpur / NPTEL',
     rating: 4.7,
-    tags: ['Video Lectures', 'IIT Faculty', 'Free']
+    tags: ['Video Lectures', 'IIT Faculty', 'Free'],
+    recommendedFor: 'Pipelining hazards and cache set-associative calculations.'
   },
   {
     id: 'res-4',
@@ -50,7 +53,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://gateoverflow.in',
     sourceName: 'Gate Overflow Community',
     rating: 4.9,
-    tags: ['PYQ', 'Community', 'Discussion', 'Free']
+    tags: ['PYQ', 'Community', 'Discussion', 'Free'],
+    recommendedFor: 'Solving and verifying all historical GATE CSE previous year questions.'
   },
   {
     id: 'res-5',
@@ -62,7 +66,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://gate2025.iitr.ac.in',
     sourceName: 'IIT Roorkee GATE 2025 Committee',
     rating: 5.0,
-    tags: ['Official Key', 'Master Question Paper', 'IIT']
+    tags: ['Official Key', 'Master Question Paper', 'IIT'],
+    recommendedFor: 'Official GATE 2025 CS-1 and CS-2 master keys.'
   },
   {
     id: 'res-6',
@@ -75,7 +80,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://www.pearson.com/',
     sourceName: 'Pearson',
     rating: 4.8,
-    tags: ['Networks', 'Standard Textbook']
+    tags: ['Networks', 'Standard Textbook'],
+    recommendedFor: 'Protocol concepts, sliding window equations, and IPv4 CIDR subnetting.'
   },
   {
     id: 'res-7',
@@ -88,7 +94,8 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://www.mheducation.com/',
     sourceName: 'McGraw Hill',
     rating: 4.9,
-    tags: ['Engineering Math', 'Discrete Math']
+    tags: ['Engineering Math', 'Discrete Math'],
+    recommendedFor: 'Propositional logic equivalences, graph planar theorems, and combinatorics.'
   },
   {
     id: 'res-8',
@@ -100,6 +107,7 @@ export const GATE_RESOURCES: Resource[] = [
     externalUrl: 'https://www.geeksforgeeks.org/gate-cs-notes-gq/',
     sourceName: 'GeeksforGeeks',
     rating: 4.6,
-    tags: ['Short Notes', 'Quick Revision', 'Free']
+    tags: ['Short Notes', 'Quick Revision', 'Free'],
+    recommendedFor: 'Quick topic revision and formula cheat sheets.'
   }
 ];

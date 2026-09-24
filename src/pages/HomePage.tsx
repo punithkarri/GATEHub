@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Sparkles,
   ArrowRight,
@@ -6,17 +6,20 @@ import {
   HelpCircle,
   Clock,
   Compass,
-  CheckCircle2,
   TrendingUp,
   FileText,
   Target,
   ChevronDown,
   ChevronUp,
-  Award
+  Award,
+  Zap,
+  BarChart3,
+  Calendar,
+  Scale
 } from 'lucide-react';
 import { GATE_CSE_SUBJECTS } from '../data/syllabus';
 import { SubjectCard } from '../components/SubjectCard';
-import { GATE_PYQS } from '../data/pyqs';
+import { ALL_GATE_PYQS } from '../data/pyqs';
 import { QuestionCard } from '../components/QuestionCard';
 
 interface HomePageProps {
@@ -24,12 +27,13 @@ interface HomePageProps {
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
-  const [activeFaq, setActiveFaq] = React.useState<number | null>(null);
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [qotdIndex, setQotdIndex] = useState<number>(0);
 
   const stats = [
     { label: 'Core CSE Subjects', value: '11', icon: <BookOpen className="w-5 h-5 text-indigo-400" /> },
     { label: 'Syllabus Topics', value: '50+', icon: <FileText className="w-5 h-5 text-purple-400" /> },
-    { label: 'GATE 2025 & PYQs', value: 'Verified', icon: <HelpCircle className="w-5 h-5 text-emerald-400" /> },
+    { label: 'Verified GATE PYQs', value: `${ALL_GATE_PYQS.length}+`, icon: <HelpCircle className="w-5 h-5 text-emerald-400" /> },
     { label: 'Mock Test Simulator', value: '3-Hour CBT', icon: <Clock className="w-5 h-5 text-amber-400" /> },
     { label: 'Study Roadmaps', value: '6M / 3M / 7D', icon: <TrendingUp className="w-5 h-5 text-pink-400" /> },
   ];
@@ -53,15 +57,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
     }
   ];
 
-  const gate2025SampleQuestion = GATE_PYQS.find(q => q.id === 'gate2025-cs1-q29') || GATE_PYQS[0];
+  const currentQotd = ALL_GATE_PYQS[qotdIndex % ALL_GATE_PYQS.length];
+
+  const nextQotd = () => {
+    setQotdIndex(prev => prev + 1);
+  };
 
   return (
     <div className="space-y-16 py-8">
       {/* Hero Section */}
-      <section className="relative text-center max-w-4xl mx-auto px-4 space-y-6 pt-8">
+      <section className="relative text-center max-w-4xl mx-auto px-4 space-y-6 pt-4">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold shadow-lg shadow-indigo-500/10 animate-bounce">
           <Sparkles className="w-4 h-4 text-amber-400" />
-          <span>Complete GATE 2025 & 2026 Preparation Ecosystem</span>
+          <span>All-in-One GATE Preparation Ecosystem</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-slate-100 leading-tight">
@@ -87,7 +95,48 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             className="px-6 py-3.5 rounded-2xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-sm flex items-center gap-2 transition-all hover:border-slate-500"
           >
             <HelpCircle className="w-4 h-4 text-emerald-400" />
-            <span>Explore GATE 2025 PYQs</span>
+            <span>Explore PYQ Library ({ALL_GATE_PYQS.length}+)</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Quick Navigation Quick Links Bar */}
+      <section className="max-w-6xl mx-auto px-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button
+            onClick={() => onNavigate('/pyq-analytics')}
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+          >
+            <BarChart3 className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
+            <div className="font-bold text-xs text-slate-200">PYQ Analytics</div>
+            <div className="text-[10px] text-slate-400">Topic recurrence & weightage</div>
+          </button>
+
+          <button
+            onClick={() => onNavigate('/timeline')}
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+          >
+            <Calendar className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
+            <div className="font-bold text-xs text-slate-200">Paper Timeline</div>
+            <div className="text-[10px] text-slate-400">2007 - 2025 GATE archive</div>
+          </button>
+
+          <button
+            onClick={() => onNavigate('/compare-years')}
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+          >
+            <Scale className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+            <div className="font-bold text-xs text-slate-200">Compare Years</div>
+            <div className="text-[10px] text-slate-400">Side-by-side year breakdown</div>
+          </button>
+
+          <button
+            onClick={() => onNavigate('/revision-queue')}
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+          >
+            <Zap className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
+            <div className="font-bold text-xs text-slate-200">Revision Queue</div>
+            <div className="text-[10px] text-slate-400">Saved & flagged questions</div>
           </button>
         </div>
       </section>
@@ -105,7 +154,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Section 1: Prepare by Subject */}
+      {/* Today's GATE Challenge / Question of the Day */}
+      <section className="max-w-6xl mx-auto px-4">
+        <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 text-xs font-semibold border border-amber-500/30 mb-2">
+                <Zap className="w-3.5 h-3.5 fill-amber-400" /> Today's GATE Challenge (Question of the Day)
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-100">Can You Solve This Official GATE Question?</h3>
+            </div>
+
+            <button
+              onClick={nextQotd}
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 text-xs font-bold transition-all shrink-0"
+            >
+              Try Another Challenge →
+            </button>
+          </div>
+
+          <QuestionCard question={currentQotd} key={currentQotd.id} />
+        </div>
+      </section>
+
+      {/* Section: Prepare by Subject */}
       <section className="max-w-7xl mx-auto px-4 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-800 pb-4">
           <div>
@@ -135,101 +207,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Section 2: Official GATE 2025 Questions Spotlight */}
-      <section className="max-w-6xl mx-auto px-4">
-        <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/30 mb-2">
-                <Award className="w-3.5 h-3.5" /> Verified Official GATE 2025 Paper Solution
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-slate-100">GATE 2025 CS-1 & CS-2 Question Bank</h3>
-              <p className="text-xs text-slate-400 mt-1">Official master question papers, verified keys, and step-by-step mathematical reasoning.</p>
-            </div>
-            <button
-              onClick={() => onNavigate('/pyqs')}
-              className="px-4 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition-all shrink-0"
-            >
-              Open Full PYQ Explorer →
-            </button>
-          </div>
-
-          {/* Interactive Question Card Sample */}
-          <QuestionCard question={gate2025SampleQuestion} showExplanationInitially={true} />
-        </div>
-      </section>
-
-      {/* Section 3: Where Should I Study & Roadmaps CTA */}
-      <section className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Where Should I Study */}
-        <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4 flex flex-col justify-between hover:border-indigo-500/40 transition-all">
-          <div className="space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
-              <Compass className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-100">Where Should I Study?</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Not sure whether to choose NPTEL, standard books, YouTube channels, or Gate Overflow? Use our interactive decision tool based on your current level, timeline, and budget.
-            </p>
-          </div>
-          <button
-            onClick={() => onNavigate('/where-to-study')}
-            className="w-full py-3 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 font-bold text-xs border border-indigo-500/40 transition-all flex items-center justify-center gap-2"
-          >
-            <span>Launch Resource Matcher</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Study Roadmaps */}
-        <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4 flex flex-col justify-between hover:border-purple-500/40 transition-all">
-          <div className="space-y-3">
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
-              <Target className="w-6 h-6" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-100">Structured Study Roadmaps</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Choose from 6-Month Master Plan, 3-Month Fast Track Sprint, or Last 7-Day Revision Checklist with interactive milestone tracking.
-            </p>
-          </div>
-          <button
-            onClick={() => onNavigate('/roadmap')}
-            className="w-full py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 font-bold text-xs border border-purple-500/40 transition-all flex items-center justify-center gap-2"
-          >
-            <span>Explore Roadmaps & Timelines</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </section>
-
-      {/* Section 4: Practice & Mock Test CTAs */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="rounded-3xl bg-gradient-to-r from-indigo-900/60 via-slate-900 to-purple-900/60 p-8 border border-slate-800 space-y-6 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 max-w-xl">
-            <div className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Exam Condition Simulator</div>
-            <h3 className="text-2xl font-black text-slate-100">Ready to test your 3-hour exam stamina?</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Experience the authentic computer-based test (CBT) palette, virtual calculator, 3-hour countdown timer, marked for review flags, and detailed accuracy analytics.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
-            <button
-              onClick={() => onNavigate('/practice')}
-              className="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold border border-slate-700 transition-all"
-            >
-              Custom Subject Quiz
-            </button>
-            <button
-              onClick={() => onNavigate('/mock-tests')}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold shadow-lg shadow-indigo-500/25 transition-all"
-            >
-              Start 3-Hour Mock Test
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 5: FAQ Accordion */}
+      {/* Section: FAQ Accordion */}
       <section className="max-w-4xl mx-auto px-4 space-y-6">
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-extrabold text-slate-100">Frequently Asked Questions</h2>

@@ -1,0 +1,80 @@
+import { Question } from '../../types';
+
+export const PYQS_2025_CS2: Question[] = [
+  {
+    id: 'gate2025-cs2-q15',
+    questionNo: 15,
+    year: 2025,
+    paper: 'CS-2',
+    subjectId: 'toc',
+    subjectName: 'Theory of Computation',
+    topic: 'Regular Languages',
+    subtopic: 'DFA State Minimization',
+    type: 'MCQ',
+    marks: 1,
+    difficulty: 'Medium',
+    questionText: 'What is the minimum number of states in a Deterministic Finite Automaton (DFA) that accepts the language L = { w ∈ {0, 1}* | w contains an even number of 0s and an odd number of 1s }?',
+    options: [
+      { id: 'A', text: '2' },
+      { id: 'B', text: '3' },
+      { id: 'C', text: '4' },
+      { id: 'D', text: '5' }
+    ],
+    correctAnswer: 'C',
+    explanation: 'State decomposition:\n1. Parity of 0s (Even / Odd) -> 2 states.\n2. Parity of 1s (Even / Odd) -> 2 states.\nProduct Automaton total states = 2 × 2 = 4 states:\n- State (Even 0, Even 1)\n- State (Even 0, Odd 1) [Final state]\n- State (Odd 0, Even 1)\n- State (Odd 0, Odd 1)\nAll 4 states are pairwise non-equivalent, so minimal DFA has 4 states.',
+    conceptTested: 'DFA state minimality and product automata construction for parity combinations.',
+    shortcutTrick: 'Parity 1 (2 states) × Parity 2 (2 states) = 4 states.',
+    source: 'Official GATE 2025 CS-2 Paper (IIT Roorkee)',
+    officialSourceLink: 'https://gate2025.iitr.ac.in',
+    tags: ['GATE 2025', 'CS-2', 'TOC', 'DFA']
+  },
+  {
+    id: 'gate2025-cs2-q42',
+    questionNo: 42,
+    year: 2025,
+    paper: 'CS-2',
+    subjectId: 'dbms',
+    subjectName: 'Database Management Systems',
+    topic: 'Normalization',
+    subtopic: 'BCNF & 3NF Check',
+    type: 'MCQ',
+    marks: 2,
+    difficulty: 'Hard',
+    questionText: 'Consider a relational schema R(A, B, C, D, E) with Functional Dependencies F = { A → BC, CD → E, B → D, E → A }. Which one of the following statements is TRUE regarding schema R?',
+    options: [
+      { id: 'A', text: 'R is in BCNF.' },
+      { id: 'B', text: 'R is in 3NF but not in BCNF.' },
+      { id: 'C', text: 'R is in 2NF but not in 3NF.' },
+      { id: 'D', text: 'R is not even in 2NF.' }
+    ],
+    correctAnswer: 'B',
+    explanation: '1. Candidate Keys for R: {A}, {E}, {BC}, {CD}.\n2. Prime Attributes = {A, B, C, D, E} (ALL attributes are prime!).\n3. 3NF check: Since ALL attributes in R are prime, EVERY FD satisfies 3NF! Thus, R IS IN 3NF.\n4. BCNF check: FD B → D has X = B, which is NOT a super key (B+ = {B, D}). Thus R violates BCNF.\nConclusion: R is in 3NF but NOT in BCNF (Option B).',
+    conceptTested: 'Candidate Key discovery, 3NF Prime Attribute exception, and BCNF violations.',
+    shortcutTrick: 'If all attributes are prime, relation is guaranteed to be in 3NF!',
+    source: 'Official GATE 2025 CS-2 Paper (IIT Roorkee)',
+    officialSourceLink: 'https://gate2025.iitr.ac.in',
+    tags: ['GATE 2025', 'CS-2', 'DBMS', 'Normalization']
+  },
+  {
+    id: 'gate2025-cs2-q55',
+    questionNo: 55,
+    year: 2025,
+    paper: 'CS-2',
+    subjectId: 'dl',
+    subjectName: 'Digital Logic',
+    topic: 'Combinational Circuits',
+    subtopic: 'Multiplexer Functions',
+    type: 'NAT',
+    marks: 2,
+    difficulty: 'Medium',
+    questionText: 'A Boolean function F(A, B, C, D) = ∑ m(0, 2, 5, 7, 8, 10, 13, 15) is implemented using a 4:1 Multiplexer with select lines S1 = A and S0 = B. What is the Boolean expression fed to input line I2 of the multiplexer?',
+    options: [],
+    correctAnswer: 'D\'',
+    explanation: '1. Select lines S1 S0 correspond to AB.\n- AB = 10 corresponds to input line I2 (minterms 8, 9, 10, 11).\n2. Minterms present in F for AB = 10 are m8 (1000) and m10 (1010).\n3. Express in terms of CD: m8 is C\'D\', m10 is CD\'.\n4. F(10, C, D) = C\'D\' + CD\' = D\'(C\' + C) = D\'.\nInput fed to I2 = D\' (D complement).',
+    conceptTested: 'Multiplexer implementation of boolean functions and input pin logic.',
+    shortcutTrick: 'Group minterms by select lines AB = 10: m8 (00) & m10 (10) present → output depends on D\' (D complement).',
+    source: 'Official GATE 2025 CS-2 Paper (IIT Roorkee)',
+    officialSourceLink: 'https://gate2025.iitr.ac.in',
+    tags: ['GATE 2025', 'CS-2', 'Digital Logic', 'MUX', 'NAT']
+  }
+];

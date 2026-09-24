@@ -36,6 +36,7 @@ export interface Question {
   subjectId: string;
   subjectName: string;
   topic: string;
+  subtopic?: string;
   type: QuestionType;
   marks: 1 | 2;
   difficulty: 'Easy' | 'Medium' | 'Hard';
@@ -46,7 +47,21 @@ export interface Question {
   explanation: string;
   conceptTested: string;
   shortcutTrick?: string;
+  source: string; // e.g. "Official GATE 2025 Paper (IIT Roorkee)" or "GATEHub Practice"
   officialSourceLink?: string;
+  tags: string[];
+}
+
+export interface PaperInfo {
+  id: string; // e.g. "2025-CS-1"
+  year: number;
+  paper: 'CS-1' | 'CS-2' | 'CS';
+  title: string;
+  organizingInstitute: string;
+  questionCount: number;
+  totalMarks: number;
+  officialSourceUrl: string;
+  isVerified: boolean;
 }
 
 export interface Resource {
@@ -61,6 +76,7 @@ export interface Resource {
   sourceName: string;
   rating: number;
   tags: string[];
+  recommendedFor: string;
 }
 
 export interface StudyRoadmap {
@@ -112,4 +128,24 @@ export interface WhereToStudyOption {
     dailyRoutine: string;
     keyAdvice: string;
   };
+}
+
+export interface Badge {
+  id: string;
+  title: string;
+  description: string;
+  iconName: string;
+  category: 'PYQ' | 'Mock' | 'Streak' | 'Syllabus';
+  unlocked: boolean;
+  progressText: string;
+}
+
+export interface StudyRecommendation {
+  id: string;
+  type: 'topic' | 'revision' | 'practice' | 'mock';
+  title: string;
+  reason: string;
+  actionLabel: string;
+  route: string;
+  priority: 'High' | 'Medium' | 'Low';
 }

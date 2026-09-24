@@ -18,14 +18,17 @@ import { RoadmapsPage } from './pages/RoadmapsPage';
 import { PlannerPage } from './pages/PlannerPage';
 import { RevisionPage } from './pages/RevisionPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { PyqAnalyticsPage } from './pages/PyqAnalyticsPage';
+import { PaperComparePage } from './pages/PaperComparePage';
+import { YearTimelinePage } from './pages/YearTimelinePage';
+import { RevisionQueuePage } from './pages/RevisionQueuePage';
+import { FullPaperPage } from './pages/FullPaperPage';
 
 export function App() {
   const parseCurrentRoute = () => {
-    // 1. Check hash route
     const hash = window.location.hash.replace('#', '');
     if (hash) return hash.startsWith('/') ? hash : '/' + hash;
 
-    // 2. Check path route (stripped of base /GATEHub)
     let path = window.location.pathname;
     if (path.startsWith('/GATEHub')) {
       path = path.replace('/GATEHub', '');
@@ -83,10 +86,7 @@ export function App() {
     if (currentRoute === '/') {
       return <HomePage onNavigate={navigateTo} />;
     }
-    if (currentRoute === '/syllabus') {
-      return <SyllabusPage onNavigate={navigateTo} />;
-    }
-    if (currentRoute === '/subjects') {
+    if (currentRoute === '/syllabus' || currentRoute === '/subjects') {
       return <SyllabusPage onNavigate={navigateTo} />;
     }
     if (currentRoute.startsWith('/subject/')) {
@@ -94,7 +94,7 @@ export function App() {
       return <SubjectDetailPage subjectId={subjectId} onNavigate={navigateTo} />;
     }
     if (currentRoute.startsWith('/pyqs')) {
-      return <PyqExplorerPage />;
+      return <PyqExplorerPage onNavigate={navigateTo} />;
     }
     if (currentRoute === '/practice') {
       return <PracticeModePage />;
@@ -123,6 +123,25 @@ export function App() {
     if (currentRoute === '/dashboard') {
       return <DashboardPage onNavigate={navigateTo} />;
     }
+    if (currentRoute === '/pyq-analytics') {
+      return <PyqAnalyticsPage />;
+    }
+    if (currentRoute === '/compare-years') {
+      return <PaperComparePage />;
+    }
+    if (currentRoute === '/timeline') {
+      return <YearTimelinePage onNavigate={navigateTo} />;
+    }
+    if (currentRoute === '/revision-queue') {
+      return <RevisionQueuePage onNavigate={navigateTo} />;
+    }
+    if (currentRoute.startsWith('/full-paper/')) {
+      const parts = currentRoute.split('/'); // /full-paper/:year/:paper
+      const year = Number(parts[2]) || 2025;
+      const paper = parts[3] || 'CS-1';
+      return <FullPaperPage year={year} paper={paper} onNavigate={navigateTo} />;
+    }
+
     return <HomePage onNavigate={navigateTo} />;
   };
 

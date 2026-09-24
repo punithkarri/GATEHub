@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Question } from '../types';
-import { CheckCircle2, XCircle, Lightbulb, Zap, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { CheckCircle2, XCircle, Lightbulb, Zap, HelpCircle, ExternalLink, ChevronDown, ChevronUp, Bookmark, RefreshCw, AlertTriangle } from 'lucide-react';
 
 interface QuestionCardProps {
   question: Question;
@@ -12,6 +12,61 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
   const [natInput, setNatInput] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [showExplanation, setShowExplanation] = useState(showExplanationInitially);
+
+  // Persistence for bookmarks, revision queue, and difficult flags
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gatehub_bookmarks');
+    const arr = saved ? JSON.parse(saved) : [];
+    return arr.includes(question.id);
+  });
+
+  const [isInRevisionQueue, setIsInRevisionQueue] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gatehub_revision_queue');
+    const arr = saved ? JSON.parse(saved) : [];
+    return arr.includes(question.id);
+  });
+
+  const [isMarkedDifficult, setIsMarkedDifficult] = useState<boolean>(() => {
+    const saved = localStorage.getItem('gatehub_difficult_questions');
+    const arr = saved ? JSON.parse(saved) : [];
+    return arr.includes(question.id);
+  });
+
+  const toggleBookmark = () => {
+    const saved = localStorage.getItem('gatehub_bookmarks');
+    let arr: string[] = saved ? JSON.parse(saved) : [];
+    if (isBookmarked) {
+      arr = arr.filter(id => id !== question.id);
+    } else {
+      arr.push(question.id);
+    }
+    localStorage.setItem('gatehub_bookmarks', JSON.stringify(arr));
+    setIsBookmarked(!isBookmarked);
+  };
+
+  const toggleRevisionQueue = () => {
+    const saved = localStorage.getItem('gatehub_revision_queue');
+    let arr: string[] = saved ? JSON.parse(saved) : [];
+    if (isInRevisionQueue) {
+      arr = arr.filter(id => id !== question.id);
+    } else {
+      arr.push(question.id);
+    }
+    localStorage.setItem('gatehub_revision_queue', JSON.stringify(arr));
+    setIsInRevisionQueue(!isInRevisionQueue);
+  };
+
+  const toggleDifficult = () => {
+    const saved = localStorage.getItem('gatehub_difficult_questions');
+    let arr: string[] = saved ? JSON.parse(saved) : [];
+    if (isMarkedDifficult) {
+      arr = arr.filter(id => id !== question.id);
+    } else {
+      arr.push(question.id);
+    }
+    localStorage.setItem('gatehub_difficult_questions', JSON.stringify(arr));
+    setIsMarkedDifficult(!isMarkedDifficult);
+  };
 
   const handleMcqSelect = (optionId: string) => {
     if (isSubmitted) return;
@@ -48,7 +103,6 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
         selectedOptions.every(opt => correctSet.includes(opt));
     } else if (question.type === 'NAT') {
       const userVal = parseFloat(natInput.trim());
-      // Handle range e.g. "62" or "12.5 to 13.0"
       if (!isNaN(userVal)) {
         if (question.correctAnswer.includes('to')) {
           const [min, max] = question.correctAnswer.split('to').map(v => parseFloat(v.trim()));
@@ -69,7 +123,7 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
 
   return (
     <div className="rounded-2xl glass-card p-6 border border-slate-800 shadow-xl space-y-4 text-slate-200">
-      {/* Question Header Badges */}
+      {/* Question Header Badges & Action Icons */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
         <div className="flex flex-wrap items-center gap-2">
           <span className="px-2.5 py-1 text-xs font-bold font-mono bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 rounded-lg">
@@ -83,11 +137,59 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
           </span>
         </div>
 
-        <div className="text-xs text-slate-400 flex items-center gap-2">
-          <span className="font-medium text-slate-300">{question.subjectName}</span>
-          <span>•</span>
-          <span className="text-slate-400">{question.topic}</span>
+        {/* Action Controls: Bookmark, Revise Later, Mark Difficult */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={toggleBookmark}
+            title={isBookmarked ? 'Remove Bookmark' : 'Bookmark Question'}
+            className={`p-1.5 rounded-lg border text-xs transition-all flex items-center gap-1 ${
+              isBookmarked
+                ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? 'fill-amber-400 text-amber-400' : ''}`} />
+            <span className="hidden sm:inline text-[11px]">{isBookmarked ? 'Saved' : 'Save'}</span>
+          </button>
+
+          <button
+            onClick={toggleRevisionQueue}
+            title={isInRevisionQueue ? 'In Revision Queue' : 'Add to Revision Queue'}
+            className={`p-1.5 rounded-lg border text-xs transition-all flex items-center gap-1 ${
+              isInRevisionQueue
+                ? 'bg-indigo-500/20 border-indigo-500/40 text-indigo-300'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${isInRevisionQueue ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline text-[11px]">{isInRevisionQueue ? 'In Queue' : 'Revise Later'}</span>
+          </button>
+
+          <button
+            onClick={toggleDifficult}
+            title={isMarkedDifficult ? 'Marked as Difficult' : 'Mark as Difficult'}
+            className={`p-1.5 rounded-lg border text-xs transition-all flex items-center gap-1 ${
+              isMarkedDifficult
+                ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
+                : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <AlertTriangle className={`w-3.5 h-3.5 ${isMarkedDifficult ? 'text-rose-400' : ''}`} />
+          </button>
         </div>
+      </div>
+
+      {/* Subject & Topic Metadata */}
+      <div className="text-xs text-slate-400 flex items-center gap-2">
+        <span className="font-semibold text-indigo-300">{question.subjectName}</span>
+        <span>•</span>
+        <span className="text-slate-300">{question.topic}</span>
+        {question.subtopic && (
+          <>
+            <span>•</span>
+            <span className="text-slate-400 font-mono text-[11px]">{question.subtopic}</span>
+          </>
+        )}
       </div>
 
       {/* Question Text */}
@@ -206,17 +308,19 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
           </button>
         </div>
 
-        {question.officialSourceLink && (
-          <a
-            href={question.officialSourceLink}
-            target="_blank"
-            rel="noreferrer"
-            className="text-xs text-slate-400 hover:text-indigo-400 flex items-center gap-1 transition-colors"
-          >
-            <span>Official GATE 2025 Key Source</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
-        )}
+        <div className="flex items-center gap-2 text-xs text-slate-400">
+          <span className="font-mono text-[11px] text-slate-500">Source: {question.source}</span>
+          {question.officialSourceLink && (
+            <a
+              href={question.officialSourceLink}
+              target="_blank"
+              rel="noreferrer"
+              className="text-indigo-400 hover:text-indigo-300 flex items-center gap-0.5"
+            >
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
+        </div>
       </div>
 
       {/* Explanation Box */}
@@ -224,8 +328,8 @@ export const QuestionCard: React.FC<QuestionCardProps> = ({ question, showExplan
         <div className="mt-4 p-5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3 animate-fadeIn text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-indigo-400 font-bold border-b border-slate-800 pb-2">
             <HelpCircle className="w-4 h-4" />
-            <span>Official Solution & Mathematical Breakdown</span>
-            <span className="ml-auto font-mono text-emerald-400">Correct Answer: {question.correctAnswer}</span>
+            <span>Official Solution & Step-by-Step Breakdown</span>
+            <span className="ml-auto font-mono text-emerald-400">Correct Key: {question.correctAnswer}</span>
           </div>
 
           <div className="text-slate-300 whitespace-pre-line leading-relaxed">
