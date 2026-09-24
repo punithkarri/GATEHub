@@ -40,6 +40,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navLinks = [
     { label: 'Home', route: '/' },
+    { label: 'Plan My Preparation', route: '/personalized-plan' },
     { label: 'Syllabus', route: '/syllabus' },
     { label: 'Subjects', route: '/subjects' },
     { label: 'PYQs', route: '/pyqs' },
@@ -48,7 +49,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Where to Study?', route: '/where-to-study' },
     { label: 'Resources', route: '/resources' },
     { label: 'Roadmap', route: '/roadmap' },
-    { label: 'Planner', route: '/planner' },
     { label: 'Revision', route: '/revision' },
     { label: 'GATE Info', route: '/gate-info' },
   ];

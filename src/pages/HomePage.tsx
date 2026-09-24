@@ -83,11 +83,19 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
         <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
           <button
-            onClick={() => onNavigate('/syllabus')}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-600 hover:from-indigo-600 hover:to-pink-700 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center gap-2 transform hover:-translate-y-0.5 transition-all"
+            onClick={() => onNavigate('/personalized-plan')}
+            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2 transform hover:-translate-y-0.5 transition-all ring-2 ring-blue-400/50"
           >
-            <span>Start Preparing Now</span>
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span>Build My GATE Plan</span>
             <ArrowRight className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={() => onNavigate('/syllabus')}
+            className="px-6 py-3.5 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-500/40 font-bold text-sm flex items-center gap-2 transition-all"
+          >
+            <span>Explore Syllabus</span>
           </button>
 
           <button

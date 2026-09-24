@@ -23,6 +23,7 @@ import { PaperComparePage } from './pages/PaperComparePage';
 import { YearTimelinePage } from './pages/YearTimelinePage';
 import { RevisionQueuePage } from './pages/RevisionQueuePage';
 import { FullPaperPage } from './pages/FullPaperPage';
+import { PersonalizedPlanPage } from './pages/PersonalizedPlanPage';
 
 export function App() {
   const parseCurrentRoute = () => {
@@ -111,8 +112,8 @@ export function App() {
     if (currentRoute === '/roadmap') {
       return <RoadmapsPage />;
     }
-    if (currentRoute === '/planner') {
-      return <PlannerPage />;
+    if (currentRoute === '/planner' || currentRoute === '/personalized-plan') {
+      return <PersonalizedPlanPage />;
     }
     if (currentRoute === '/revision') {
       return <RevisionPage />;
