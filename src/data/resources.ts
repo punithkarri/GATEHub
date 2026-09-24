@@ -1,0 +1,105 @@
+import { Resource } from '../types';
+
+export const GATE_RESOURCES: Resource[] = [
+  {
+    id: 'res-1',
+    name: 'Introduction to Algorithms (CLRS)',
+    type: 'Book',
+    subjectId: 'algo',
+    description: 'The definitive standard textbook for Algorithms, covering asymptotic analysis, recurrences, dynamic programming, and graph algorithms.',
+    difficulty: 'Intermediate',
+    isFree: false,
+    externalUrl: 'https://mitpress.mit.edu/9780262046305/introduction-to-algorithms/',
+    sourceName: 'MIT Press (Cormen, Leiserson, Rivest, Stein)',
+    rating: 4.9,
+    tags: ['Standard Book', 'Algorithms', 'Core Reference']
+  },
+  {
+    id: 'res-2',
+    name: 'Operating System Concepts (Galvin)',
+    type: 'Book',
+    subjectId: 'os',
+    description: 'Comprehensive coverage of Process Synchronization, Deadlocks, Memory Management, Paging, and Storage Systems.',
+    difficulty: 'Intermediate',
+    isFree: false,
+    externalUrl: 'https://www.wiley.com/',
+    sourceName: 'Wiley (Silberschatz, Galvin, Gagne)',
+    rating: 4.8,
+    tags: ['Standard Book', 'Operating Systems', 'Must Read']
+  },
+  {
+    id: 'res-3',
+    name: 'NPTEL Computer Architecture by Prof. Mainak Chaudhuri',
+    type: 'YouTube',
+    subjectId: 'coa',
+    description: 'In-depth university lectures on Pipelining, Cache Memory design, and Computer Organization.',
+    difficulty: 'Advanced',
+    isFree: true,
+    externalUrl: 'https://nptel.ac.in/courses/106104024',
+    sourceName: 'IIT Kanpur / NPTEL',
+    rating: 4.7,
+    tags: ['Video Lectures', 'IIT Faculty', 'Free']
+  },
+  {
+    id: 'res-4',
+    name: 'Gate Overflow PYQ Practice Portal',
+    type: 'Practice Platform',
+    description: 'Comprehensive open community question bank for all GATE CSE previous year questions with multiple user solutions and official keys.',
+    difficulty: 'All Levels',
+    isFree: true,
+    externalUrl: 'https://gateoverflow.in',
+    sourceName: 'Gate Overflow Community',
+    rating: 4.9,
+    tags: ['PYQ', 'Community', 'Discussion', 'Free']
+  },
+  {
+    id: 'res-5',
+    name: 'IIT Roorkee Official GATE 2025 Master Question Papers & Key',
+    type: 'Official',
+    description: 'Official master question papers and final answer keys released by the organizing IIT.',
+    difficulty: 'All Levels',
+    isFree: true,
+    externalUrl: 'https://gate2025.iitr.ac.in',
+    sourceName: 'IIT Roorkee GATE 2025 Committee',
+    rating: 5.0,
+    tags: ['Official Key', 'Master Question Paper', 'IIT']
+  },
+  {
+    id: 'res-6',
+    name: 'Computer Networking: A Top-Down Approach (Kurose & Ross)',
+    type: 'Book',
+    subjectId: 'cn',
+    description: 'Excellent protocol-oriented explanation of TCP/IP layers, sockets, sliding window, and subnetting.',
+    difficulty: 'Beginner',
+    isFree: false,
+    externalUrl: 'https://www.pearson.com/',
+    sourceName: 'Pearson',
+    rating: 4.8,
+    tags: ['Networks', 'Standard Textbook']
+  },
+  {
+    id: 'res-7',
+    name: 'Discrete Mathematics and Its Applications (Kenneth Rosen)',
+    type: 'Book',
+    subjectId: 'em',
+    description: 'Essential textbook for Discrete Math, Graph Theory, Logic, and Combinatorics.',
+    difficulty: 'Beginner',
+    isFree: false,
+    externalUrl: 'https://www.mheducation.com/',
+    sourceName: 'McGraw Hill',
+    rating: 4.9,
+    tags: ['Engineering Math', 'Discrete Math']
+  },
+  {
+    id: 'res-8',
+    name: 'GeeksforGeeks GATE CS Notes & Trackers',
+    type: 'Website',
+    description: 'Topic-wise short notes, formula sheets, and practice quizzes tailored specifically for GATE CSE.',
+    difficulty: 'Beginner',
+    isFree: true,
+    externalUrl: 'https://www.geeksforgeeks.org/gate-cs-notes-gq/',
+    sourceName: 'GeeksforGeeks',
+    rating: 4.6,
+    tags: ['Short Notes', 'Quick Revision', 'Free']
+  }
+];
