@@ -15,7 +15,9 @@ import {
   Zap,
   BarChart3,
   Calendar,
-  Scale
+  Scale,
+  Play,
+  RotateCcw
 } from 'lucide-react';
 import { GATE_CSE_SUBJECTS } from '../data/syllabus';
 import { SubjectCard } from '../components/SubjectCard';
@@ -29,6 +31,9 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [qotdIndex, setQotdIndex] = useState<number>(0);
+
+  const activeExamStr = localStorage.getItem('gatehub_active_exam');
+  const activeExam = activeExamStr ? JSON.parse(activeExamStr) : null;
 
   const stats = [
     { label: 'Core CSE Subjects', value: '11', icon: <BookOpen className="w-5 h-5 text-indigo-400" /> },
@@ -64,9 +69,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="space-y-16 py-8">
+    <div className="space-y-12 py-6">
+      {/* Active Exam Alert if session saved */}
+      {activeExam && (
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="bg-amber-950/80 border border-amber-500 rounded-3xl p-5 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+            <div className="flex items-center space-x-3">
+              <RotateCcw className="w-6 h-6 text-amber-400 shrink-0 animate-spin" />
+              <div>
+                <h4 className="font-bold text-white text-sm">Active Examination Session Detected</h4>
+                <p className="text-xs text-amber-300">Resume your saved exam session for "{activeExam.paperTitle}".</p>
+              </div>
+            </div>
+            <button
+              onClick={() => onNavigate('/mock-tests')}
+              className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-md cursor-pointer shrink-0"
+            >
+              Resume Active Examination →
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Hero Section */}
-      <section className="relative text-center max-w-4xl mx-auto px-4 space-y-6 pt-4">
+      <section className="relative text-center max-w-4xl mx-auto px-4 space-y-6 pt-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold shadow-lg shadow-indigo-500/10 animate-bounce">
           <Sparkles className="w-4 h-4 text-amber-400" />
           <span>All-in-One GATE Preparation Ecosystem</span>
@@ -81,29 +107,46 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           Everything you need to understand the syllabus, learn concepts, practice PYQs, take mock tests, and track your preparation — in one place.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
           <button
             onClick={() => onNavigate('/personalized-plan')}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2 transform hover:-translate-y-0.5 transition-all ring-2 ring-blue-400/50"
+            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-black text-sm shadow-xl shadow-blue-500/30 flex items-center gap-2 transform hover:-translate-y-0.5 transition-all ring-2 ring-blue-400/50 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span>Build My GATE Plan</span>
-            <ArrowRight className="w-4 h-4" />
+            <Play className="w-4 h-4 fill-white" />
+            <span>Continue Preparation</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('/mock-tests')}
+            className="px-6 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-xl shadow-emerald-500/20 flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <Clock className="w-4 h-4" />
+            <span>Start Real Exam Mode</span>
           </button>
 
           <button
             onClick={() => onNavigate('/syllabus')}
-            className="px-6 py-3.5 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-500/40 font-bold text-sm flex items-center gap-2 transition-all"
+            className="px-6 py-3.5 rounded-2xl bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-500/40 font-bold text-sm flex items-center gap-2 transition-all cursor-pointer"
           >
             <span>Explore Syllabus</span>
           </button>
+        </div>
+      </section>
 
+      {/* Today's Study Plan Quick Card */}
+      <section className="max-w-6xl mx-auto px-4">
+        <div className="rounded-3xl glass-card p-6 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">Today's Study Experience</span>
+            <h3 className="text-lg font-black text-white">Daily Target: Operating Systems & Process Synchronization</h3>
+            <p className="text-xs text-slate-400">Concept Video (NPTEL) • GATE PYQs • Spaced Revision Queue</p>
+          </div>
           <button
-            onClick={() => onNavigate('/pyqs')}
-            className="px-6 py-3.5 rounded-2xl bg-slate-800/90 hover:bg-slate-800 text-slate-200 border border-slate-700 font-bold text-sm flex items-center gap-2 transition-all hover:border-slate-500"
+            onClick={() => onNavigate('/personalized-plan')}
+            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md flex items-center gap-1.5 shrink-0 cursor-pointer"
           >
-            <HelpCircle className="w-4 h-4 text-emerald-400" />
-            <span>Explore PYQ Library ({ALL_GATE_PYQS.length}+)</span>
+            <span>Open Today's Plan</span>
+            <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </section>
@@ -113,7 +156,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <button
             onClick={() => onNavigate('/pyq-analytics')}
-            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group cursor-pointer"
           >
             <BarChart3 className="w-5 h-5 text-indigo-400 group-hover:scale-110 transition-transform" />
             <div className="font-bold text-xs text-slate-200">PYQ Analytics</div>
@@ -122,7 +165,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('/timeline')}
-            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group cursor-pointer"
           >
             <Calendar className="w-5 h-5 text-purple-400 group-hover:scale-110 transition-transform" />
             <div className="font-bold text-xs text-slate-200">Paper Timeline</div>
@@ -131,7 +174,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('/compare-years')}
-            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group cursor-pointer"
           >
             <Scale className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
             <div className="font-bold text-xs text-slate-200">Compare Years</div>
@@ -140,7 +183,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
           <button
             onClick={() => onNavigate('/revision-queue')}
-            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group"
+            className="p-4 rounded-2xl glass-card border border-slate-800 hover:border-indigo-500/40 text-left space-y-1 transition-all group cursor-pointer"
           >
             <Zap className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
             <div className="font-bold text-xs text-slate-200">Revision Queue</div>
@@ -175,7 +218,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
 
             <button
               onClick={nextQotd}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 text-xs font-bold transition-all shrink-0"
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 text-xs font-bold transition-all shrink-0 cursor-pointer"
             >
               Try Another Challenge →
             </button>
@@ -196,7 +239,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
           </div>
           <button
             onClick={() => onNavigate('/subjects')}
-            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+            className="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 cursor-pointer"
           >
             <span>View All 11 Subjects</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -230,7 +273,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate }) => {
             >
               <button
                 onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
-                className="w-full text-left p-4 sm:p-5 flex items-center justify-between text-sm font-semibold text-slate-200 hover:text-indigo-300 transition-colors"
+                className="w-full text-left p-4 sm:p-5 flex items-center justify-between text-sm font-semibold text-slate-200 hover:text-indigo-300 transition-colors cursor-pointer"
               >
                 <span>{faq.q}</span>
                 {activeFaq === idx ? (

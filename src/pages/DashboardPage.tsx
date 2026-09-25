@@ -2,7 +2,7 @@ import React from 'react';
 import { GATE_CSE_SUBJECTS } from '../data/syllabus';
 import { TopicStatus, Badge, StudyRecommendation } from '../types';
 import { ALL_GATE_PYQS } from '../data/pyqs';
-import { LayoutDashboard, CheckCircle2, Flame, Award, HelpCircle, ArrowRight, Target, AlertTriangle, BookOpen, Sparkles, RefreshCw, Zap } from 'lucide-react';
+import { LayoutDashboard, CheckCircle2, Flame, Award, HelpCircle, ArrowRight, Target, AlertTriangle, BookOpen, Sparkles, RefreshCw, Zap, Play, Calendar } from 'lucide-react';
 
 interface DashboardPageProps {
   onNavigate: (route: string) => void;
@@ -18,6 +18,9 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     const saved = localStorage.getItem('gatehub_revision_queue');
     return saved ? JSON.parse(saved) : [];
   })();
+
+  const activeExamStr = localStorage.getItem('gatehub_active_exam');
+  const activeExam = activeExamStr ? JSON.parse(activeExamStr) : null;
 
   const totalTopicsCount = GATE_CSE_SUBJECTS.reduce((acc, s) => acc + s.topics.length, 0);
   const completedTopicsCount = Object.values(topicStatusMap).filter(st => st === 'Completed' || st === 'Strong').length;
@@ -65,6 +68,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      {/* Continue Active Exam Banner if any */}
+      {activeExam && (
+        <div className="bg-amber-950/80 border border-amber-500 rounded-3xl p-5 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center space-x-3">
+            <RefreshCw className="w-6 h-6 text-amber-400 shrink-0 animate-spin" />
+            <div>
+              <h4 className="font-bold text-white text-sm">Active Examination Session Available</h4>
+              <p className="text-xs text-amber-300">You have an in-progress exam: "{activeExam.paperTitle}".</p>
+            </div>
+          </div>
+          <button
+            onClick={() => onNavigate('/mock-tests')}
+            className="px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-md cursor-pointer"
+          >
+            Resume Examination Session →
+          </button>
+        </div>
+      )}
+
       {/* Header Banner */}
       <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -78,10 +100,17 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => onNavigate('/practice')}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20"
+              onClick={() => onNavigate('/personalized-plan')}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md flex items-center gap-1.5 cursor-pointer"
             >
-              Resume Quiz Practice
+              <Calendar className="w-4 h-4" />
+              <span>Continue Preparation</span>
+            </button>
+            <button
+              onClick={() => onNavigate('/practice')}
+              className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs cursor-pointer"
+            >
+              Practice Questions
             </button>
           </div>
         </div>
@@ -112,6 +141,48 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         </div>
       </div>
 
+      {/* Today's Study Plan Widget */}
+      <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
+        <div className="flex justify-between items-center border-b border-slate-800/80 pb-4">
+          <div>
+            <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">Today's Action Schedule</span>
+            <h3 className="text-xl font-black text-white mt-1">Today's Recommended Preparation Plan</h3>
+          </div>
+          <button
+            onClick={() => onNavigate('/personalized-plan')}
+            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+          >
+            <Play className="w-3.5 h-3.5 fill-white" /> Continue Preparation
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+          <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <span className="text-slate-400 font-semibold block">Today's Core Topic</span>
+            <strong className="text-white text-sm block mt-1">Operating Systems (Processes & Threads)</strong>
+            <span className="text-[10px] text-blue-400">120 Mins Scheduled</span>
+          </div>
+
+          <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <span className="text-slate-400 font-semibold block">Today's Video Lecture</span>
+            <strong className="text-white text-sm block mt-1">NPTEL / IIT Kharagpur OS Series</strong>
+            <span className="text-[10px] text-emerald-400">45 Mins Concept Video</span>
+          </div>
+
+          <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <span className="text-slate-400 font-semibold block">Today's PYQ Practice</span>
+            <strong className="text-white text-sm block mt-1">GATE 2007-2025 OS Questions</strong>
+            <span className="text-[10px] text-amber-400">45 Mins PYQs</span>
+          </div>
+
+          <div className="p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <span className="text-slate-400 font-semibold block">Today's Spaced Revision</span>
+            <strong className="text-white text-sm block mt-1">Semaphores & Peterson Solution</strong>
+            <span className="text-[10px] text-purple-400">30 Mins Active Recall</span>
+          </div>
+        </div>
+      </div>
+
       {/* "What Should I Study Now?" Intelligent Recommender */}
       <div className="rounded-3xl glass-card p-6 sm:p-8 border border-slate-800 space-y-4">
         <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
@@ -131,7 +202,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
 
               <button
                 onClick={() => onNavigate(rec.route)}
-                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1"
+                className="w-full py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-300 text-xs font-bold border border-slate-700 transition-colors flex items-center justify-center gap-1 cursor-pointer"
               >
                 <span>{rec.actionLabel}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -155,7 +226,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
               </h3>
               <button
                 onClick={() => onNavigate('/mock-tests')}
-                className="text-xs text-indigo-400 font-bold hover:underline"
+                className="text-xs text-indigo-400 font-bold hover:underline cursor-pointer"
               >
                 Take New Mock Exam →
               </button>

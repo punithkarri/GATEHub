@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { generateFullPracticePaper } from '../data/pyqs';
-import { ExamModeConsole } from '../components/ExamModeConsole';
+import { ExamMode } from '../components/exam/ExamMode';
 
 interface MockTestPageProps {
   onNavigate?: (route: string) => void;
@@ -8,10 +8,10 @@ interface MockTestPageProps {
 }
 
 export const MockTestPage: React.FC<MockTestPageProps> = ({ onNavigate, onExamModeChange }) => {
-  const [mockQuestions] = useState(() => generateFullPracticePaper('GATEHub Full-Length Mock Examination'));
+  const [mockQuestions] = useState(() => generateFullPracticePaper('GATE 2026 Full-Length Mock Examination'));
 
   return (
-    <ExamModeConsole
+    <ExamMode
       paperTitle="GATE 2026 Full-Length Mock Examination (CBT Simulator)"
       paperType="generated"
       questions={mockQuestions}
