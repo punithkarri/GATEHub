@@ -9,13 +9,31 @@ interface PyqExplorerPageProps {
 }
 
 export const PyqExplorerPage: React.FC<PyqExplorerPageProps> = ({ onNavigate }) => {
+  const parseSubjectFromUrl = () => {
+    const hash = window.location.hash;
+    if (hash.includes('?')) {
+      const queryStr = hash.split('?')[1];
+      const params = new URLSearchParams(queryStr);
+      const subj = params.get('subject');
+      if (subj) return subj;
+    }
+    return 'All';
+  };
+
   const [activeTab, setActiveTab] = useState<'all' | 'recent' | 'classic' | 'full-papers'>('all');
   const [selectedYear, setSelectedYear] = useState<string>('All');
   const [selectedPaper, setSelectedPaper] = useState<string>('All');
-  const [selectedSubject, setSelectedSubject] = useState<string>('All');
+  const [selectedSubject, setSelectedSubject] = useState<string>(parseSubjectFromUrl);
   const [selectedType, setSelectedType] = useState<string>('All');
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  React.useEffect(() => {
+    const subj = parseSubjectFromUrl();
+    if (subj !== 'All') {
+      setSelectedSubject(subj);
+    }
+  }, [window.location.hash]);
 
   const filteredQuestions = ALL_GATE_PYQS.filter(q => {
     let matchesTab = true;
